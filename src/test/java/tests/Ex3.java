@@ -11,7 +11,7 @@ public class Ex3 extends CoreTestCase
     public void testCancelSearch()
     {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
-        //SearchPageObject.clickSkip();
+        SearchPageObject.clickSkip();
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
         try{Thread.sleep(3000);}  catch (Exception e){}//пауза

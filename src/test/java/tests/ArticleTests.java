@@ -15,7 +15,7 @@ public class ArticleTests extends CoreTestCase
         //SearchPageObject.clickSkip();
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        SearchPageObject.clickByArticleWithSubstring("bject-oriented programming language");
 
         ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
         String article_title = ArticlePageObject.getArticleTitle();

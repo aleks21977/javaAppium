@@ -1,7 +1,7 @@
 package lib.ui.ios;
 
-import io.appium.java_client.AppiumDriver;
 import lib.ui.SearchPageObject;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class IOSSearchPageObject extends SearchPageObject
 {
@@ -19,7 +19,7 @@ public class IOSSearchPageObject extends SearchPageObject
         ARTICLE_BY_NAME_JAVA = "xpath://XCUIElementTypeLink[contains(@name,'Java (programming language)')]";
     }
 
-    public IOSSearchPageObject(AppiumDriver driver)
+    public IOSSearchPageObject(RemoteWebDriver driver)
     {
         super(driver);
     }

@@ -1,42 +1,68 @@
 package tests;
 
 import lib.CoreTestCase;
-import lib.ui.ArticlePageObject;
-import lib.ui.MyListsPageObject;
-import lib.ui.NavigationUI;
-import lib.ui.SearchPageObject;
+import lib.Platform;
+import lib.ui.*;
+import lib.ui.factories.ArticlePageObjectFactory;
+import lib.ui.factories.MyListsPageObjectFactory;
+import lib.ui.factories.NavigationUIFactory;
 import lib.ui.factories.SearchPageObjectFactory;
 import org.junit.Test;
 
 public class MyListsTests extends CoreTestCase
 {
+    private static final String name_of_folder = "Learning programming";
+    private static final String
+            login = "Aleks21977",
+            password = "123123+z";
+
 
     @Test
     public void testSaveFirstArticleToMyList()
     {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
-        //SearchPageObject.clickSkip();
         SearchPageObject.initSearchInput();
         SearchPageObject.typeSearchLine("Java");
-        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+        SearchPageObject.clickByArticleWithSubstring("bject-oriented programming language");
 
-        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject ArticlePageObject = ArticlePageObjectFactory.get(driver);
         ArticlePageObject.waitForTitleElement();
-        //String article_title = ArticlePageObject.getArticleTitle();
-        String article_description = ArticlePageObject.getArticleDescription();
-        String name_of_folder = "Learning programming";
+        String article_title = ArticlePageObject.getArticleTitle();
 
-        ArticlePageObject.addArticleOneToMyList(name_of_folder);
+
+        if (Platform.getInstance().isAndroid()) {
+            ArticlePageObject.addArticleOneToMyList(name_of_folder);
+        } else {
+            try{Thread.sleep(2000);}  catch (Exception e){}//пауза для отладки
+            ArticlePageObject.addArticlesToMySaved();
+        }
+        try{Thread.sleep(2000);}  catch (Exception e){}//пауза для отладки
+        if (Platform.getInstance().isMW()) {
+            AuthorizationPageObject Auth = new AuthorizationPageObject(driver);
+            Auth.clickAuthButton();
+            Auth.enterLoginData(login, password);
+            Auth.submitForm();
+            ArticlePageObject.addArticlesToMySaved();
+
+            ArticlePageObject.waitForTitleElement();
+
+            assertEquals("",
+                    article_title,
+                    ArticlePageObject.getArticleTitle()
+            );
+
+        }
         ArticlePageObject.closeArticle();
 
-        NavigationUI NavigationUI = new NavigationUI(driver);
-        NavigationUI.clickNoThanks();
+        NavigationUI NavigationUI = NavigationUIFactory.get(driver);
+        NavigationUI.openNavigatin();
         NavigationUI.clickMyList();
 
-        MyListsPageObject MyListsPageObject = new MyListsPageObject(driver);
-        try{Thread.sleep(3000);}  catch (Exception e){}//пауза
-        MyListsPageObject.openFolderByName(name_of_folder);
-        //try{Thread.sleep(2000);}  catch (Exception e){}//пауза
-        MyListsPageObject.swipeByArticleOneToDelete(article_description);
+        MyListsPageObject MyListsPageObject = MyListsPageObjectFactory.get(driver);
+
+        if (Platform.getInstance().isAndroid()) {
+            MyListsPageObject.openFolderByName(name_of_folder);
+        }
+        MyListsPageObject.swipeByArticleToDelete(article_title);
     }
 }

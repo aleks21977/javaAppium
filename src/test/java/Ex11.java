@@ -37,7 +37,7 @@ public class Ex11 extends CoreTestCase
         IOSNavigationUI.clickMyList();
         //try{Thread.sleep(2000);}  catch (Exception e){}//пауза
         IOSMyListsPageObject IOSMyListsPageObject = new IOSMyListsPageObject(driver);
-        IOSMyListsPageObject.swipeByArticleToDelete();
+        IOSArticlePageObject.swipeByArticleToDelete();
 
         //проверяем что вторая осталась
         String article_title_in_save_list = IOSMyListsPageObject.getArticleTitle();

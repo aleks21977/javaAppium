@@ -16,7 +16,7 @@ public class SearchTests extends CoreTestCase
 //        //SearchPageObject.clickSkip();
 //        SearchPageObject.initSearchInput();
 //        SearchPageObject.typeSearchLine("Java");
-//        SearchPageObject.waitForSearchResult("Object-oriented programming language");
+//        SearchPageObject.waitForSearchResult("bject-oriented programming language");
 //    }
 
 
@@ -54,6 +54,8 @@ public class SearchTests extends CoreTestCase
     {
         SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
         //SearchPageObject.clickSkip();
+        try{Thread.sleep(5000);}  catch (Exception e){}//пауза
+
         SearchPageObject.initSearchInput();
         String search_line = "dfsdhtrhsath";
         SearchPageObject.typeSearchLine(search_line);

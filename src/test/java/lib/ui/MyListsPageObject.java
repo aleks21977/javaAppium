@@ -1,16 +1,17 @@
 package lib.ui;
 
-import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
+import lib.Platform;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
 public class MyListsPageObject extends MainPageObject{
 
-    public static final String
-            FOLDER_BY_NAME_TPL = "xpath://*[@text='{FOLDER_NAME}']",
-            ARTICLE_BY_TITLE_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']", //"//*[@text='{TITLE}']",
-            ARTICLE_BY_DESCRIPTION_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{DESCRIPTION}']",
-            NAME_ARTICLE_TITLE_IN_SAVE_LIST = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title']";
+    protected static String
+            FOLDER_BY_NAME_TPL,// = "xpath://*[@text='{FOLDER_NAME}']",
+            ARTICLE_BY_TITLE_TPL,// = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title'][@text='{TITLE}']", //"//*[@text='{TITLE}']",
+            ARTICLE_BY_DESCRIPTION_TPL,// = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_description'][@text='{DESCRIPTION}']",
+            NAME_ARTICLE_TITLE_IN_SAVE_LIST,// = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_title']";
+            REMOVE_FROM_SAVED_BUTTON;
 
     private static String getFolderXpathByName(String name_of_folder)//ИМЯ ПАПКИ Learning programming
     {
@@ -22,13 +23,19 @@ public class MyListsPageObject extends MainPageObject{
         return ARTICLE_BY_TITLE_TPL.replace("{TITLE}", article_title);
     }
 
+    private static String getRemoveButtonByTitle(String article_title)
+    {
+        return REMOVE_FROM_SAVED_BUTTON.replace("{TITLE}", article_title);
+    }
+
+
     private static String getSaveArticleXpathByDescription(String article_description) //ОПИСАНИЕ СТАТЬИ Object-oriented programming language
     {
         return ARTICLE_BY_DESCRIPTION_TPL.replace("{DESCRIPTION}", article_description);
     }
 
 
-    public MyListsPageObject(AppiumDriver driver)
+    public MyListsPageObject(RemoteWebDriver driver)
     {
         super(driver);
     }
@@ -65,23 +72,67 @@ public class MyListsPageObject extends MainPageObject{
     {
         this.waitForArticleToAppearByDescription(article_description);
         String description_xpath = getSaveArticleXpathByDescription(article_description);
-        this.swipeElementToLeft(
-                description_xpath,//"//*[@text='Object-oriented programming language']"
-                "Cannot find save article"
-        );
+
+        if (Platform.getInstance().isIOS()) {
+            this.swipeElementToLeft(
+                    description_xpath,//"//*[@text='Object-oriented programming language']"
+                    "Cannot find save article"
+            );
+        } else {
+            String remove_locator = getRemoveButtonByTitle(article_description);
+            this.waitForElementAndClick(
+                    remove_locator,
+                    "Cannot click button to remove article from saved.",
+                    10
+            );
+        }
+
+        if (Platform.getInstance().isIOS()) {
+            this.waitForArticleToDisappearByTitle(article_description);
+        }
+
+        if (Platform.getInstance().isMW()) {
+            driver.navigate().refresh();
+        }
+
         this.waitForArticleToDisappearByTitle(article_description);
+
     }
+
 
     public void swipeByArticleToDelete(String article_title)
     {
         this.waitForArticleToAppearByTitle(article_title);
         String article_xpath = getSaveArticleXpathByTitle(article_title);
-        this.swipeElementToLeft(
-                article_xpath,
-                "Cannot find save article"
-        );
+
+        if (Platform.getInstance().isIOS() || Platform.getInstance().isAndroid()) {
+            this.swipeElementToLeft(
+                    article_xpath,
+                    "Cannot find save article"
+            );
+        } else {
+            String remove_locator = getRemoveButtonByTitle(article_title);
+            this.waitForElementAndClick(
+                    remove_locator,
+                    "Cannot click button to remove article from saved.",
+                    10
+            );
+        }
+
+        if (Platform.getInstance().isIOS()) {
+            this.waitForArticleToDisappearByTitle(article_title);
+        }
+
+        if (Platform.getInstance().isMW()) {
+            driver.navigate().refresh();
+            try{Thread.sleep(2000);}  catch (Exception e){}//пауза для отладки
+        }
+
         this.waitForArticleToDisappearByTitle(article_title);
     }
+
+
+
 
     public WebElement waitForTitleElement()
     {
