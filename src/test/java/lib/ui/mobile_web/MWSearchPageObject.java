@@ -14,7 +14,9 @@ public class MWSearchPageObject extends SearchPageObject {
         SEARCH_RESULT_ELEMENT = "css:ul.page-list>li.page-summary";
         SEARCH_EMPTY_RESULT_ELEMENT = "css:p.without-results";
         CLEAR_BUTTON = "xpath://XCUIElementTypeButton[@name='clear mini']";
-        ARTICLE_BY_DESCRIPTION_AND_TITLE = "xpath://XCUIElementTypeLink[@name='{TITLE}\n{DESCRIPTION}']";
+
+
+        ARTICLE_BY_DESCRIPTION_AND_TITLE = "xpath://div[contains(text(),'{DESCRIPTION}')]/..//strong[contains(text(),'{TITLE}')]"; //[contains(@text,'{TITLE}')]
         ARTICLE_BY_NAME_APPIUM = "xpath://XCUIElementTypeLink[@name='Appium']";
         ARTICLE_BY_NAME_JAVA = "xpath://XCUIElementTypeLink[contains(@name,'Java (programming language)')]";
     }
