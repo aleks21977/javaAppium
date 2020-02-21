@@ -9,19 +9,23 @@ import java.util.List;
 
 public class ArticlePageObject extends MainPageObject{
 
-    protected static String // было private static final String
-        TITLE,// = "xpath://android.view.View[@resource-id='content']/android.view.View[1]",
-        TITLE_TWO,// = "//android.view.View[@resource-id='content']/*[@text='Java (programming language)']",
-        DESCRIPTION,// = "xpath://*[@text='Object-oriented programming language']",
-        FOOTER_ELEMENT,// = "xpath://*[@text='View page in browser']",
-        OPTIONS_ADD_TO_MY_LIST_BUTTON,// = "xpath://*[@resource-id='org.wikipedia:id/article_menu_bookmark']",
-        OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,// = "",
-        GOT_IT_OVERLAY,// = "xpath://*[@resource-id='org.wikipedia:id/onboarding_button']",
-        CREATE_NEW,// = "xpath://*[@resource-id='org.wikipedia:id/create_button']",
-        INPUT_NAME_SAVE_FOLDER,// = "xpath://*[@resource-id='org.wikipedia:id/text_input']",
-        MY_LIST_OK_BUTTON,// = "xpath://*[@text='OK']",
-        CLOSE_ARTICLE_BUTTON,// = "xpath://android.widget.ImageButton[@content-desc='Navigate up']",
-        MY_LIST_NAME_INPUT;// = "xpath://*[@text='Learning programming']";
+    protected static String
+        TITLE,
+        FIND_DATA_ID,
+        //DATA_ID,
+        TITLE_TWO,
+        DESCRIPTION,
+        FOOTER_ELEMENT,
+        OPTIONS_ADD_TO_MY_LIST_BUTTON,
+        OPTIONS_ADD_TO_MY_LIST_BUTTON2,
+        OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
+        OPTIONS_REMOVE_FROM_MY_LIST_BUTTON2,
+        GOT_IT_OVERLAY,
+        CREATE_NEW,
+        INPUT_NAME_SAVE_FOLDER,
+        MY_LIST_OK_BUTTON,// =
+        CLOSE_ARTICLE_BUTTON,
+        MY_LIST_NAME_INPUT;
 
     public ArticlePageObject(RemoteWebDriver driver)
     {
@@ -29,10 +33,23 @@ public class ArticlePageObject extends MainPageObject{
     }
 
 
+    public WebElement waitForDataIdElement()
+    {
+        return this.waitForElementPresent(FIND_DATA_ID, "Cannot find article title on page!", 10);
+    }
+
     public WebElement waitForTitleElement()
     {
         return this.waitForElementPresent(TITLE, "Cannot find article title on page!", 10);
     }
+
+    public String getDataId()
+    {
+        WebElement title_element = waitForDataIdElement();
+            System.out.println(title_element.getAttribute("data-id"));
+            return title_element.getAttribute("data-id");
+    }
+
 
     public String getArticleTitle()
     {
@@ -45,6 +62,8 @@ public class ArticlePageObject extends MainPageObject{
             return title_element.getText();
         }
     }
+
+
 
     public WebElement waitForDescriptionElement()
     {
@@ -144,21 +163,23 @@ public class ArticlePageObject extends MainPageObject{
         if (Platform.getInstance().isMW()) {
             this.removeArticleFromSavedIfItAdded();
         }
+        try{Thread.sleep(2000);}  catch (Exception e){}//пауза для отладки
         this.waitForElementAndClick(OPTIONS_ADD_TO_MY_LIST_BUTTON, "Cannor find button to add article to reading list(2)", 5);
     }
 
 
     public void removeArticleFromSavedIfItAdded ()
     {
-        if (this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON)) {
-            this.waitForElementAndClick(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON,
+        if (this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON) || this.isElementPresent(OPTIONS_REMOVE_FROM_MY_LIST_BUTTON2))  {
+            try{Thread.sleep(2000);}  catch (Exception e){}//пауза для отладки
+            this.waitForElementAndClick(OPTIONS_ADD_TO_MY_LIST_BUTTON2,
             "Cannot click button to remove an article from saved.",
-            1
+            3
             );
             this.waitForElementPresent(
                     OPTIONS_ADD_TO_MY_LIST_BUTTON,
                     "Cannot find button to add an article to saved list after removing it from this list before.",
-                    1
+                    3
             );
         }
     }

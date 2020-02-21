@@ -124,8 +124,9 @@ public class MyListsPageObject extends MainPageObject{
         }
 
         if (Platform.getInstance().isMW()) {
+            try{Thread.sleep(3000);}  catch (Exception e){}//пауза для отладки
             driver.navigate().refresh();
-            try{Thread.sleep(2000);}  catch (Exception e){}//пауза для отладки
+            try{Thread.sleep(5000);}  catch (Exception e){}//пауза для отладки
         }
 
         this.waitForArticleToDisappearByTitle(article_title);
